@@ -1,0 +1,9 @@
+{
+  "name": "天気予報",
+  "manifest_version": 3,
+  "version": "0.1",
+  "action": {
+    "default_icon": "img/sun.png",
+    "default_popup": "index.html"
+  }
+}

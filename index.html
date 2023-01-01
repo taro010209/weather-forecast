@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <title>OTENKI</title>
+    <style>
+      :root {
+        --color-black: #222;
+        --color-white: #fff;
+        --color-blue: #455f77;
+        color: var(--color-black);
+        font-family: Helvetica, Arial, 'ヒラギノ角ゴ Pro W3', 'Hiragino Kaku Gothic Pro', 'メイリオ', Meiryo, 'MS PGothic', 'MS UI Gothic', sans-serif;
+        font-weight: 400;
+        line-height: 1.5;
+        letter-spacing: 0.06em;
+      }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        width: 550px;
+        padding: 10px 14px 10px;
+        background-color: var(--color-blue);
+      }
+      /* 設定 */
+      .summary {
+        display: grid;
+        grid-template:
+          'select report' auto
+          'areaName areaName' auto/
+          18% auto;
+        gap: 14px 10px;
+        color: var(--color-white);
+      }
+      .summary__area_select {
+        grid-area: select;
+        padding: 4px 4px;
+        border-color: var(--color-white);
+        border-radius: 2px;
+        font-size: 14px;
+        color: var(--color-white);
+        background-color: transparent;
+        cursor: pointer;
+      }
+      .summary__report {
+        grid-area: report;
+        align-self: center;
+        font-size: 14px;
+      }
+      .summary__area {
+        grid-area: areaName;
+        font-size: 34px;
+        text-align: center;
+      }
+      /* ロードアニメ */
+      .loading_wrapper.js_cancel {
+        display: none;
+      }
+      .loading_wrapper {
+        width: 40px;
+        height: 40px;
+        margin: 0 auto 550px;
+        position: relative;
+      }
+      .double-bounce {
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+        background-color: var(--color-white);
+        opacity: 0.6;
+        position: absolute;
+        top: 0;
+        left: 0;
+        animation: loading 2s infinite ease-in-out;
+      }
+      .double-bounce:last-of-type {
+        animation-delay: -1s;
+      }
+      @keyframes loading {
+        0%,
+        100% {
+          transform: scale(0);
+        }
+        50% {
+          transform: scale(1);
+        }
+      }
+      /* コンテンツ */
+      .main {
+        margin-top: 20px;
+      }
+      /* カード */
+      .weather_wrapper {
+        padding: 30px 20px;
+        border-radius: 12px;
+        background-color: var(--color-white);
+        text-align: center;
+      }
+      .weather_wrapper:not(:first-of-type) {
+        margin-top: 20px;
+      }
+      /* 日にち */
+      .weather_wrapper__date {
+        font-size: 20px;
+        font-weight: 600;
+      }
+      /* 天気 */
+      .weather_wrapper__weather_text {
+        margin-top: 10px;
+        font-size: 50px;
+        font-weight: 600;
+        font-feature-settings: 'palt';
+        color: var(--color-blue);
+      }
+      /* インナー */
+      .weather_wrapper__inner {
+        margin-top: 20px;
+        padding: 20px 30px;
+        border: 1px solid var(--color-black);
+        border-radius: 4px;
+      }
+      /* 3日目のインナー消去 */
+      .weather_wrapper:last-of-type .weather_wrapper__inner {
+        display: none;
+      }
+      /* 17時をすぎたら当日の気温を消滅 */
+      .weather_wrapper__inner.js_night_shift .temperature_wrapper {
+        display: none;
+      }
+      /* 17時をすぎたら当日の降水確率のデザイン調整 */
+      .weather_wrapper__inner.js_night_shift .rainy_percent_wrapper {
+        margin-top: 0;
+        padding-top: 0;
+        border: none;
+      }
+      /* 気温 ラッパー */
+      .temperature_wrapper {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      /* 気温 テキスト */
+      .temperature_wrapper__each {
+        display: flex;
+        align-items: center;
+        font-size: 16px;
+      }
+      .temperature_wrapper__each:last-of-type {
+        margin-left: 30px;
+      }
+      /* 気温 数値 */
+      .temperature_wrapper__value {
+        font-size: 24px;
+        font-weight: 600;
+        color: var(--color-blue);
+      }
+      /* 降水確率 ラッパー */
+      .rainy_percent_wrapper {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-top: 20px;
+        padding-top: 20px;
+        border-top: 1px solid var(--color-black);
+        position: relative;
+      }
+      .rainy_percent_wrapper::before {
+        content: '降水確率';
+      }
+      /* 降水確率 各自 */
+      .rainy_percent_wrapper__each {
+        margin-left: 30px;
+      }
+      /* 降水確率 時間 */
+      .rainy_percent_wrapper__time {
+        display: block;
+        font-size: 12px;
+      }
+      /* 降水確率 数値 */
+      .rainy_percent_wrapper__value {
+        display: block;
+        font-size: 24px;
+        font-weight: 600;
+        color: var(--color-blue);
+      }
+      /* 出典 */
+      .source {
+        margin-top: 20px;
+        color: var(--color-white);
+      }
+      .source a {
+        color: var(--color-white);
+        text-decoration-color: var(--color-white);
+      }
+      .source a:visited {
+        color: var(--color-white);
+      }
+    </style>
+  </head>
+  <body>
+    <header class="summary">
+      <select required name="area" id="js_area_select" class="summary__area_select"></select>
+      <p class="summary__report">
+        <time datetime="" id="js_weather_reportDatetime" class="weather__reportDatetime"></time>
+        <span id="js_weather_publishingOffice" class="weather__publishingOffice"></span>
+        発表
+      </p>
+      <h1 id="js_weather_area" class="summary__area"></h1>
+    </header>
+    <main id="main" class="main">
+      <div id="js_loading" class="loading_wrapper">
+        <div class="double-bounce"></div>
+        <div class="double-bounce"></div>
+      </div>
+      <section id="js_weather" class="weather"></section>
+    </main>
+    <div>
+      <p class="hoge" data-day="2022-12-19"></p>
+      <p class="hoge" data-day="2022-12-19"></p>
+    </div>
+    <div>
+      <p class="hoge" data-day="2022-12-20"></p>
+      <p class="hoge" data-day="2022-12-20"></p>
+    </div>
+    <footer class="source">出典：気象庁ホームページ（<a href="https://www.jma.go.jp/bosai/forecast/" target="_blank">https://www.jma.go.jp/bosai/forecast/</a>）</footer>
+
+    <script src="index.js"></script>
+  </body>
+</html>
