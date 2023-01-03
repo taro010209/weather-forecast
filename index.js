@@ -145,13 +145,14 @@ const DOMBuild = () => {
   weatherContainer.appendChild(DOMWeatherWrapper);
 };
 
+const zeroPadding = (num) => ('00' + num).slice(-2);
 const newDate = new Date();
 const toDayYear = newDate.getFullYear();
 const toDayMonth = newDate.getMonth() + 1;
 const toDayDate = newDate.getDate();
 const toDayHours = newDate.getHours();
-const toDaysDate = `${toDayYear}-${toDayMonth}-${toDayDate}`;
-const tomorrowsDate = `${toDayYear}-${toDayMonth}-${toDayDate + 1}`;
+const toDaysDate = `${toDayYear}-${zeroPadding(toDayMonth)}-${zeroPadding(toDayDate)}`;
+const tomorrowsDate = `${toDayYear}-${zeroPadding(toDayMonth)}-${zeroPadding(toDayDate) + 1}`;
 const daysEach = ['(日)', '(月)', '(火)', '(水)', '(木)', '(金)', '(土)'];
 
 // 日にち
@@ -197,7 +198,7 @@ const temperatureEachBuild = (targetArray, targetArrayValue) => {
       document.querySelector(`.weather_wrapper[data-day="${temperatureArray[index][0]}"] .temperature_wrapper__each:last-of-type .temperature_wrapper__value`).textContent = `${temperatureArray[index][2]}°`;
     }
     if (9 <= toDayHours) {
-      document.querySelector(`.weather_wrapper[data-day="${toDaysDate}"] .temperature_wrapper__each:first-of-type .temperature_wrapper__value`).textContent = '-';
+      console.log((document.querySelector(`.weather_wrapper[data-day="${toDaysDate}"] .temperature_wrapper__each:first-of-type .temperature_wrapper__value`).textContent = '-'));
     }
     if (17 <= toDayHours) {
       document.getElementsByClassName('weather_wrapper__inner')[0].classList.add('js_night_shift');
