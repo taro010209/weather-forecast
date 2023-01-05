@@ -170,7 +170,7 @@ const dayDateBuild = (targetArray) => {
     } else if (toDayDate + 2 == thisDate) {
       weatherWrapperDate[index].textContent = `明後日 ${element.split('T')[0].replace(/-/g, '/').substring(5)}${daysEach[thisDay]}`;
     }
-    weatherWrapperDate[index].setAttribute('datetime', element);
+    weatherWrapperDate[index].setAttribute('data-time', element);
     weatherWrapper[index].dataset.day = element.split('T')[0];
   });
 };
@@ -191,6 +191,7 @@ const temperatureEachBuild = (targetArray, targetArrayValue) => {
     temperatureArray[index][1] = element.split('T')[1].substring(0, 2); // hh
     temperatureArray[index][2] = targetArrayValue[index]; // 気温数値
   });
+  console.log(temperatureArray);
   targetArrayValue.forEach((element, index) => {
     if (index % 2 === 0) {
       document.querySelector(`.weather_wrapper[data-day="${temperatureArray[index][0]}"] .temperature_wrapper__each:first-of-type .temperature_wrapper__value`).textContent = `${temperatureArray[index][2]}°`;
