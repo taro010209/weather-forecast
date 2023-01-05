@@ -1,5 +1,5 @@
 const areasArray = [
-  { code: '010000', name: '北海道' },
+  { code: '013000', name: '北海道' },
   { code: '020000', name: '青森県' },
   { code: '030000', name: '岩手県' },
   { code: '040000', name: '宮城県' },
@@ -191,7 +191,6 @@ const temperatureEachBuild = (targetArray, targetArrayValue) => {
     temperatureArray[index][1] = element.split('T')[1].substring(0, 2); // hh
     temperatureArray[index][2] = targetArrayValue[index]; // 気温数値
   });
-  console.log(temperatureArray);
   targetArrayValue.forEach((element, index) => {
     if (index % 2 === 0) {
       document.querySelector(`.weather_wrapper[data-day="${temperatureArray[index][0]}"] .temperature_wrapper__each:first-of-type .temperature_wrapper__value`).textContent = `${temperatureArray[index][2]}°`;
