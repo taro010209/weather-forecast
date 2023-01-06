@@ -197,11 +197,13 @@ const temperatureEachBuild = (targetArray, targetArrayValue) => {
     } else {
       document.querySelector(`.weather_wrapper[data-day="${temperatureArray[index][0]}"] .temperature_wrapper__each:last-of-type .temperature_wrapper__value`).textContent = `${temperatureArray[index][2]}°`;
     }
-    if (9 <= toDayHours) {
-      document.querySelector(`.weather_wrapper[data-day="${toDaysDate}"] .temperature_wrapper__each:first-of-type .temperature_wrapper__value`).textContent = '-';
-    }
     if (17 <= toDayHours) {
       document.getElementsByClassName('weather_wrapper__inner')[0].classList.add('js_night_shift');
+    }
+  });
+  document.querySelectorAll('.weather_wrapper .temperature_wrapper__each .temperature_wrapper__value').forEach((element) => {
+    if (element.textContent === '') {
+      element.textContent = '-';
     }
   });
 };
