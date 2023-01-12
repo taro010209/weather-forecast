@@ -164,11 +164,11 @@ const dayDateBuild = (targetArray) => {
     const thisDate = new Date(element).getDate();
     const thisDay = new Date(element).getDay();
     if (toDayDate == thisDate) {
-      weatherWrapperDate[index].textContent = `今日 ${element.split('T')[0].replace(/-/g, '/').substring(5)}${daysEach[thisDay]}`;
+      weatherWrapperDate[index].textContent = `今日 ${element.split('T')[0].replace(/-/g, '/').substring(8)}日${daysEach[thisDay]}`;
     } else if (toDayDate + 1 == thisDate) {
-      weatherWrapperDate[index].textContent = `明日 ${element.split('T')[0].replace(/-/g, '/').substring(5)}${daysEach[thisDay]}`;
+      weatherWrapperDate[index].textContent = `明日 ${element.split('T')[0].replace(/-/g, '/').substring(8)}日${daysEach[thisDay]}`;
     } else if (toDayDate + 2 == thisDate) {
-      weatherWrapperDate[index].textContent = `明後日 ${element.split('T')[0].replace(/-/g, '/').substring(5)}${daysEach[thisDay]}`;
+      weatherWrapperDate[index].textContent = `明後日 ${element.split('T')[0].replace(/-/g, '/').substring(8)}日${daysEach[thisDay]}`;
     }
     weatherWrapperDate[index].setAttribute('data-time', element);
     weatherWrapper[index].dataset.day = element.split('T')[0];
@@ -228,7 +228,7 @@ const rainyPercentEachBuild = (targetArray, targetArrayValue) => {
     // 時間
     const DOMrainyPercentWrapperTime = document.createElement('span');
     DOMrainyPercentWrapperTime.classList.add('rainy_percent_wrapper__time');
-    DOMrainyPercentWrapperTime.textContent = `${element[1]}時`;
+    DOMrainyPercentWrapperTime.textContent = `${element[1]}時〜`;
 
     // 数値
     const DOMrainyPercentWrapperValue = document.createElement('span');
@@ -246,10 +246,10 @@ const getWeather = async (prefectureCode) => {
   const loading = document.getElementById('js_loading');
   loading.classList.remove('js_cancel');
   const response = await fetch(`https://www.jma.go.jp/bosai/forecast/data/forecast/${prefectureCode}.json`);
+  const data = await response.json();
   if (response.ok) {
     loading.classList.add('js_cancel');
   }
-  const data = await response.json();
 
   // 表示地域名
   areaNameOutput(prefectureCode);
