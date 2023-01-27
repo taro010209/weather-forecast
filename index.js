@@ -78,8 +78,9 @@ const areaNameOutput = (targetCode) => {
 // 発表時刻
 const reportDatetimeOutput = (targetArray) => {
   const reportDatetime = targetArray.split('+')[0].replace(/-/g, '/').replace('T', ' ');
-  document.getElementById('js_weather_reportDatetime').textContent = reportDatetime;
-  document.getElementById('js_weather_reportDatetime').setAttribute('datetime', targetArray);
+  const weatherReportDatetime = document.getElementById('js_weather_reportDatetime');
+  weatherReportDatetime.textContent = reportDatetime;
+  weatherReportDatetime.setAttribute('datetime', targetArray);
 };
 
 // 発表者
@@ -241,35 +242,43 @@ const rainyPercentEachBuild = (targetArray, targetArrayValue) => {
   });
 };
 
-// https://www.jma.go.jp/bosai/forecast/data/forecast/130000.json
 const getWeather = async (prefectureCode) => {
-  const loading = document.getElementById('js_loading');
-  loading.classList.remove('js_cancel');
-  const response = await fetch(`https://www.jma.go.jp/bosai/forecast/data/forecast/${prefectureCode}.json`);
-  const data = await response.json();
-  if (response.ok) {
-    loading.classList.add('js_cancel');
+  try {
+    const loading = document.getElementById('js_loading');
+    loading.classList.remove('js_cancel');
+
+    const url = 'https://www.jma.go.jp/bosai/forecast/data/forecast/';
+    const encodeParam = encodeURIComponent(prefectureCode);
+    const response = await fetch(`${url}${encodeParam}.json`);
+    const data = await response.json();
+
+    if (response.ok) {
+      loading.classList.add('js_cancel');
+    }
+
+    // 表示地域名
+    areaNameOutput(prefectureCode);
+
+    // 発表時刻
+    reportDatetimeOutput(data[0].reportDatetime);
+
+    // 発表者
+    publishingOfficeOutput(data[0].publishingOffice);
+
+    // 日にち
+    dayDateBuild(data[0].timeSeries[0].timeDefines);
+
+    // 各日の天気テキスト
+    weatherTextBuild(data[0].timeSeries[0].areas[0]);
+
+    // 気温
+    temperatureEachBuild(data[0].timeSeries[2].timeDefines, data[0].timeSeries[2].areas[0].temps);
+
+    // 降水確率
+    rainyPercentEachBuild(data[0].timeSeries[1].timeDefines, data[0].timeSeries[1].areas[0].pops);
+  } catch (error) {
+    console.error(error);
+    alert('エラーが発生しました。');
   }
-
-  // 表示地域名
-  areaNameOutput(prefectureCode);
-
-  // 発表時刻
-  reportDatetimeOutput(data[0].reportDatetime);
-
-  // 発表者
-  publishingOfficeOutput(data[0].publishingOffice);
-
-  // 日にち
-  dayDateBuild(data[0].timeSeries[0].timeDefines);
-
-  // 各日の天気テキスト
-  weatherTextBuild(data[0].timeSeries[0].areas[0]);
-
-  // 気温
-  temperatureEachBuild(data[0].timeSeries[2].timeDefines, data[0].timeSeries[2].areas[0].temps);
-
-  // 降水確率
-  rainyPercentEachBuild(data[0].timeSeries[1].timeDefines, data[0].timeSeries[1].areas[0].pops);
 };
 getWeather(130000);
