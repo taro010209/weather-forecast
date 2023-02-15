@@ -211,7 +211,21 @@
         <div class="double-bounce"></div>
         <div class="double-bounce"></div>
       </div>
-      <section id="js_weather" class="weather"></section>
+      <section id="js_weather" class="weather">
+        <template id="js_weather_wrapper_template">
+          <div class="weather_wrapper" data-day="">
+            <time id="js_weather_wrapper__date" class="weather_wrapper__date" data-time=""></time>
+            <p class="weather_wrapper__weather_text"></p>
+            <div class="weather_wrapper__inner">
+              <div class="temperature_wrapper">
+                <p class="temperature_wrapper__each">朝の最低:<span class="temperature_wrapper__value"></span></p>
+                <p class="temperature_wrapper__each">日中の最高:<span class="temperature_wrapper__value"></span></p>
+              </div>
+              <div class="rainy_percent_wrapper"></div>
+            </div>
+          </div>
+        </template>
+      </section>
     </main>
     <footer class="footer">
       <small class="source">出典：気象庁ホームページ（<a href="https://www.jma.go.jp/bosai/forecast/" target="_blank">https://www.jma.go.jp/bosai/forecast/</a>）</small>

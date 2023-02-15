@@ -59,11 +59,11 @@ const areasArray = [
   });
   document.querySelector('#js_area_select option[value="130000"]').setAttribute('selected', '');
 
-  areaSelectButton.addEventListener('input', (element) => {
+  areaSelectButton.addEventListener('input', (code) => {
     document.querySelectorAll('.weather_wrapper').forEach((wrapper) => {
       wrapper.parentNode.removeChild(wrapper);
     });
-    getWeather(element.target.value);
+    getWeather(code.target.value);
   });
 })();
 
@@ -88,91 +88,26 @@ const publishingOfficeOutput = (targetArray) => {
   document.getElementById('js_weather_publishingOffice').textContent = targetArray;
 };
 
-// DOM生成
-const DOMBuild = () => {
-  const weatherContainer = document.getElementById('js_weather');
-
-  // ラッパー
-  const DOMWeatherWrapper = document.createElement('div');
-  DOMWeatherWrapper.classList.add('weather_wrapper');
-
-  // 日付
-  const DOMWeatherWrapperDate = document.createElement('time');
-  DOMWeatherWrapperDate.classList.add('weather_wrapper__date');
-  DOMWeatherWrapper.appendChild(DOMWeatherWrapperDate); // div.weather_wrapper > time.weather_wrapper__date
-
-  // 天気テキスト
-  const DOMweatherWrapperWeatherText = document.createElement('p');
-  DOMweatherWrapperWeatherText.classList.add('weather_wrapper__weather_text');
-  DOMWeatherWrapper.appendChild(DOMweatherWrapperWeatherText); // div.weather_wrapper > p.weather_wrapper__weather_text
-
-  // 気温と降水確率のインナーラッパー
-  const DOMweatherWrapperInner = document.createElement('div');
-  DOMweatherWrapperInner.classList.add('weather_wrapper__inner');
-  DOMWeatherWrapper.appendChild(DOMweatherWrapperInner); // div.weather_wrapper > div.weather_wrapper__inner
-
-  // 気温ラッパー
-  const DOMtemperatureWrapper = document.createElement('div');
-  DOMtemperatureWrapper.classList.add('temperature_wrapper');
-  DOMweatherWrapperInner.appendChild(DOMtemperatureWrapper); // div.weather_wrapper__inner > div.temperature_wrapper
-
-  // 気温各個（最低気温）
-  const DOMtemperatureEachFirst = document.createElement('p');
-  DOMtemperatureEachFirst.textContent = '朝の最低:';
-  DOMtemperatureEachFirst.classList.add('temperature_wrapper__each');
-  DOMtemperatureWrapper.appendChild(DOMtemperatureEachFirst); // div.temperature_wrapper > p.temperature_wrapper__each > span.temperature_wrapper__value
-
-  // 気温数値（最低気温）
-  const DOMtemperatureEachFirstValue = document.createElement('span');
-  DOMtemperatureEachFirstValue.classList.add('temperature_wrapper__value');
-  DOMtemperatureEachFirst.appendChild(DOMtemperatureEachFirstValue); // p.temperature_wrapper__each > span.temperature_wrapper__value
-
-  // 気温各個（最高気温）
-  const DOMtemperatureEachSecond = document.createElement('p');
-  DOMtemperatureEachSecond.textContent = '日中の最高:';
-  DOMtemperatureEachSecond.classList.add('temperature_wrapper__each');
-  DOMtemperatureWrapper.appendChild(DOMtemperatureEachSecond); // div.temperature_wrapper > p.temperature_wrapper__each > span.temperature_wrapper__value
-
-  // 気温数値（最高気温）
-  const DOMtemperatureEachSecondValue = document.createElement('span');
-  DOMtemperatureEachSecondValue.classList.add('temperature_wrapper__value');
-  DOMtemperatureEachSecond.appendChild(DOMtemperatureEachSecondValue); // p.temperature_wrapper__each > span.temperature_wrapper__value
-
-  // 降水確率ラッパー
-  const DOMrainyPercentWrapper = document.createElement('div');
-  DOMrainyPercentWrapper.classList.add('rainy_percent_wrapper');
-  DOMweatherWrapperInner.appendChild(DOMrainyPercentWrapper); // div.weather_wrapper__inner > div.temperature_wrapper
-
-  weatherContainer.appendChild(DOMWeatherWrapper);
-};
-
-const zeroPadding = (num) => ('00' + num).slice(-2);
 const newDate = new Date();
 const toDayYear = newDate.getFullYear();
 const toDayMonth = newDate.getMonth() + 1;
 const toDayDate = newDate.getDate();
 const toDayHours = newDate.getHours();
-const toDaysDate = `${toDayYear}-${zeroPadding(toDayMonth)}-${zeroPadding(toDayDate)}`;
-const tomorrowsDate = `${toDayYear}-${zeroPadding(toDayMonth)}-${zeroPadding(toDayDate) + 1}`;
-const daysEach = ['(日)', '(月)', '(火)', '(水)', '(木)', '(金)', '(土)'];
 
 // 日にち
 const dayDateBuild = (targetArray) => {
-  targetArray.forEach((element, index) => {
-    DOMBuild(); // 3日分のDOMを生成
-    const weatherWrapper = document.getElementsByClassName('weather_wrapper');
-    const weatherWrapperDate = document.getElementsByClassName('weather_wrapper__date');
-    const thisDate = new Date(element).getDate();
+  const DAY_EACH = ['(日)', '(月)', '(火)', '(水)', '(木)', '(金)', '(土)'];
+  const templateWrapper = document.getElementById('js_weather_wrapper_template');
+
+  targetArray.forEach((element) => {
     const thisDay = new Date(element).getDay();
-    if (toDayDate == thisDate) {
-      weatherWrapperDate[index].textContent = `今日 ${element.split('T')[0].replace(/-/g, '/').substring(8)}日${daysEach[thisDay]}`;
-    } else if (toDayDate + 1 == thisDate) {
-      weatherWrapperDate[index].textContent = `明日 ${element.split('T')[0].replace(/-/g, '/').substring(8)}日${daysEach[thisDay]}`;
-    } else if (toDayDate + 2 == thisDate) {
-      weatherWrapperDate[index].textContent = `明後日 ${element.split('T')[0].replace(/-/g, '/').substring(8)}日${daysEach[thisDay]}`;
-    }
-    weatherWrapperDate[index].setAttribute('data-time', element);
-    weatherWrapper[index].dataset.day = element.split('T')[0];
+    const templateClone = templateWrapper.content.cloneNode(true);
+    const T_weatherWrapper = templateClone.querySelector('.weather_wrapper');
+    const T_weatherWrapperDate = templateClone.querySelector('.weather_wrapper__date');
+    T_weatherWrapper.dataset.day = element.split('T')[0];
+    T_weatherWrapperDate.textContent = `今日 ${element.split('T')[0].replace(/-/g, '/').substring(8)}日${DAY_EACH[thisDay]}`;
+    T_weatherWrapperDate.setAttribute('data-time', element);
+    document.getElementById('js_weather').appendChild(templateClone);
   });
 };
 
@@ -247,10 +182,11 @@ const getWeather = async (prefectureCode) => {
     const loading = document.getElementById('js_loading');
     loading.classList.remove('js_cancel');
 
-    const url = 'https://www.jma.go.jp/bosai/forecast/data/forecast/';
+    const URL = 'https://www.jma.go.jp/bosai/forecast/data/forecast/';
     const encodeParam = encodeURIComponent(prefectureCode);
-    const response = await fetch(`${url}${encodeParam}.json`);
+    const response = await fetch(`${URL}${encodeParam}.json`);
     const data = await response.json();
+    console.log(data);
 
     if (response.ok) {
       loading.classList.add('js_cancel');
