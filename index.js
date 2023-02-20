@@ -186,7 +186,6 @@ const getWeather = async (prefectureCode) => {
     const encodeParam = encodeURIComponent(prefectureCode);
     const response = await fetch(`${URL}${encodeParam}.json`);
     const data = await response.json();
-    console.log(data);
 
     if (response.ok) {
       loading.classList.add('js_cancel');
