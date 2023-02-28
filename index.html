@@ -7,7 +7,10 @@
       :root {
         --color-black: #222;
         --color-white: #fff;
-        --color-blue: #455f77;
+        --color-gray: #f0f0f0;
+        --color-blue: #2e468f;
+        --box-shadow: rgba(50, 50, 93, 0.25) 0px 2px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 3px -1px;
+        --border-radius: 12px;
         color: var(--color-black);
         font-family: Helvetica, Arial, 'ヒラギノ角ゴ Pro W3', 'Hiragino Kaku Gothic Pro', 'メイリオ', Meiryo, 'MS PGothic', 'MS UI Gothic', sans-serif;
         font-weight: 400;
@@ -22,25 +25,23 @@
       body {
         width: 550px;
         padding: 10px 14px 10px;
-        background-color: var(--color-blue);
+        background-color: var(--color-gray);
       }
       /* 設定 */
       .summary {
         display: grid;
         grid-template:
           'select report' auto
-          'areaName areaName' auto/
+          'areaName areaName' auto /
           18% auto;
         gap: 14px 10px;
-        color: var(--color-white);
       }
       .summary__area_select {
         grid-area: select;
         padding: 4px 4px;
-        border-color: var(--color-white);
+        border-color: var(--color-black);
         border-radius: 2px;
         font-size: 14px;
-        color: var(--color-white);
         background-color: transparent;
         cursor: pointer;
       }
@@ -68,7 +69,7 @@
         width: 100%;
         height: 100%;
         border-radius: 50%;
-        background-color: var(--color-white);
+        background-color: var(--color-blue);
         opacity: 0.6;
         position: absolute;
         top: 0;
@@ -89,17 +90,18 @@
       }
       /* コンテンツ */
       .main {
-        margin-top: 20px;
+        margin-top: 14px;
       }
       /* カード */
       .weather_wrapper {
         padding: 30px 20px;
-        border-radius: 12px;
+        border-radius: var(--border-radius);
         background-color: var(--color-white);
+        box-shadow: var(--box-shadow);
         text-align: center;
       }
       .weather_wrapper:not(:first-of-type) {
-        margin-top: 20px;
+        margin-top: 8px;
       }
       /* 日にち */
       .weather_wrapper__date {
@@ -118,7 +120,7 @@
       .weather_wrapper__inner {
         margin-top: 20px;
         padding: 20px 30px;
-        border: 1px solid var(--color-black);
+        border: 1px solid;
         border-radius: 4px;
       }
       /* 3日目のインナー消去 */
@@ -154,7 +156,6 @@
       .temperature_wrapper__value {
         font-size: 24px;
         font-weight: 600;
-        color: var(--color-blue);
       }
       /* 降水確率 ラッパー */
       .rainy_percent_wrapper {
@@ -163,7 +164,7 @@
         justify-content: center;
         margin-top: 20px;
         padding-top: 20px;
-        border-top: 1px solid var(--color-black);
+        border-top: 1px solid;
         position: relative;
       }
       .rainy_percent_wrapper::before {
@@ -183,16 +184,14 @@
         display: block;
         font-size: 24px;
         font-weight: 600;
-        color: var(--color-blue);
       }
       /* 出典 */
       .footer {
         margin-top: 20px;
-        color: var(--color-white);
       }
       .source a {
-        color: var(--color-white);
-        text-decoration-color: var(--color-white);
+        color: var(--color-black);
+        text-decoration-color: var(--color-black);
       }
     </style>
   </head>
