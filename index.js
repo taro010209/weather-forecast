@@ -29,19 +29,21 @@ const publishingOfficeOutput = (targetArray) => {
 // 日にち
 const dayDateBuild = (targetArray) => {
   // targetArray =  ['yyyy-mm-ddT00:00:00+09:00', ..]
+  const EACH_DAYS_STRING = ['今日', '明日', '明後日'];
   const DAY_EACH = ['(日)', '(月)', '(火)', '(水)', '(木)', '(金)', '(土)'];
   const templateWrapper = document.getElementById('js_weather_wrapper_template');
 
-  targetArray.forEach((element) => {
+  targetArray.forEach((element, index) => {
     const thisDay = new Date(element).getDay();
     const templateClone = templateWrapper.content.cloneNode(true);
     const templateWeatherWrapper = templateClone.querySelector('.weather_wrapper');
     const templateWeatherWrapperDate = templateClone.querySelector('.weather_wrapper__date');
     const elementSplit = element.split('T')[0]; // T以前を切り出し(yyyy-mm-dd)
     const elementSubstring = elementSplit.substring(8, 10); // 日付を抜き出し(dd)
+    const eachDaysNumber = Number(elementSubstring); // ゼロサプレス
     templateWeatherWrapper.dataset.day = elementSplit;
     templateWeatherWrapperDate.dataset.time = element;
-    templateWeatherWrapperDate.textContent = `今日 ${elementSubstring}日${DAY_EACH[thisDay]}`;
+    templateWeatherWrapperDate.textContent = `${EACH_DAYS_STRING[index]}${eachDaysNumber}日${DAY_EACH[thisDay]}`;
     document.getElementById('js_weather').appendChild(templateClone);
   });
 };
@@ -61,6 +63,7 @@ const temperatureEachBuild = (targetArray, targetArrayValue) => {
   const newDate = new Date();
   const toDayHours = newDate.getHours();
   const temperatureArray = []; // [['yyyy-mm-dd', '時(Number)', '最低気温(Number)'], ['yyyy-mm-dd', '時(Number)', '最高気温(Number)']]
+
   targetArray.forEach((element, index) => {
     temperatureArray[index] = [];
     temperatureArray[index][0] = element.split('T')[0]; // yyyy-mm-dd
@@ -105,7 +108,7 @@ const rainyPercentEachBuild = (targetArray, targetArrayValue) => {
     // 時間
     const rainyPercentWrapperTime = document.createElement('span');
     rainyPercentWrapperTime.classList.add('rainy_percent_wrapper__time');
-    rainyPercentWrapperTime.textContent = `${element[1]}時〜`;
+    rainyPercentWrapperTime.textContent = `${Number(element[1])}時〜`;
 
     // 降水確率数値
     const rainyPercentWrapperValue = document.createElement('span');
@@ -168,6 +171,8 @@ const getWeather = async (prefectureCode) => {
   });
   document.querySelector('#js_area_select option[value="130000"]').setAttribute('selected', '');
 
+  getWeather(130000);
+
   areaSelectButton.addEventListener('input', (code) => {
     document.querySelectorAll('.weather_wrapper').forEach((wrapper) => {
       wrapper.parentNode.removeChild(wrapper);
@@ -175,5 +180,3 @@ const getWeather = async (prefectureCode) => {
     getWeather(code.target.value);
   });
 })();
-
-getWeather(130000);
