@@ -1,5 +1,14 @@
 import { areasArray } from './areas.js';
 
+// パラムの入力値確認
+const paramJudgment = (code) => {
+  const pattern = /^[0-9]+$/; // 数字判定
+  if (!pattern.test(code)) {
+    alert('不正な入力データです。');
+    throw new Error('Invalid input value');
+  }
+};
+
 // 表示地域名
 const areaNameOutput = (targetCode) => {
   // targetCode = areasArray.code
@@ -62,13 +71,9 @@ const temperatureEachBuild = (targetArray, targetArrayValue) => {
   // targetArrayValue =  ['最低気温(Number)', '最高気温(Number)']
   const newDate = new Date();
   const toDayHours = newDate.getHours();
-  const temperatureArray = []; // [['yyyy-mm-dd', '時(Number)', '最低気温(Number)'], ['yyyy-mm-dd', '時(Number)', '最高気温(Number)']]
 
-  targetArray.forEach((element, index) => {
-    temperatureArray[index] = [];
-    temperatureArray[index][0] = element.split('T')[0]; // yyyy-mm-dd
-    temperatureArray[index][1] = element.split('T')[1].substring(0, 2); // hh
-    temperatureArray[index][2] = targetArrayValue[index]; // 気温(Number)
+  const temperatureArray = targetArray.map((element, index) => {
+    return [element.split('T')[0], element.split('T')[1].substring(0, 2), targetArrayValue[index]];
   });
 
   targetArrayValue.forEach((element, index) => {
@@ -93,13 +98,10 @@ const temperatureEachBuild = (targetArray, targetArrayValue) => {
 const rainyPercentEachBuild = (targetArray, targetArrayValue) => {
   // targetArray= ['yyyy-mm-ddT00:00:00+09:00', ..]
   // targetArrayValue = ['n日n時の降水確率(Number)', ..]
-  const rainyPercentArray = [];
-  targetArray.forEach((element, index) => {
-    rainyPercentArray[index] = [];
-    rainyPercentArray[index][0] = element.split('T')[0]; // yyyy-mm-dd
-    rainyPercentArray[index][1] = element.split('T')[1].substring(0, 2); // hh
-    rainyPercentArray[index][2] = targetArrayValue[index]; // 降水確率(Number)
+  const rainyPercentArray = targetArray.map((element, index) => {
+    return [element.split('T')[0], element.split('T')[1].substring(0, 2), targetArrayValue[index]];
   });
+
   rainyPercentArray.forEach((element) => {
     // ラッパー各個
     const rainyPercentWrapperEach = document.createElement('p');
@@ -125,6 +127,9 @@ const getWeather = async (prefectureCode) => {
   // prefectureCode = areasArray.code
   const loading = document.getElementById('js_loading');
   loading.classList.remove('js_cancel');
+
+  // パラムの入力値確認
+  paramJudgment(prefectureCode);
 
   try {
     const URL = 'https://www.jma.go.jp/bosai/forecast/data/forecast/';
@@ -153,8 +158,8 @@ const getWeather = async (prefectureCode) => {
     // 降水確率
     rainyPercentEachBuild(data[0].timeSeries[1].timeDefines, data[0].timeSeries[1].areas[0].pops);
   } catch (error) {
-    console.error(error);
-    alert('エラーが発生しました。');
+    alert('エラーが発生しました。\nページをリロードしてください。');
+    throw new Error(error);
   } finally {
     loading.classList.add('js_cancel');
   }
